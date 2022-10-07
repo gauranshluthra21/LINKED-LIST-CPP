@@ -1,0 +1,200 @@
+#include<iostream>
+using namespace std;
+
+class Node
+{
+public:
+	int data;
+	Node *next, *prev;
+
+	Node(int d) {
+		data = d;
+		next = prev = nullptr;
+	}
+};
+
+Node* CreateDLL() {
+
+	Node* head = nullptr;
+	Node* tail = nullptr;
+
+	int n;
+	cin >> n;
+
+	for (int i = 0; i < n; i++) {
+		int d; cin >> d;
+		Node* n = new Node(d);
+
+		if (head == nullptr) {
+			head = n;
+			tail = n;
+		} else {
+			tail ->next = n;
+			n->prev = tail;
+			tail = n;
+		}
+
+	}
+
+	return head;
+}
+
+void Print(Node*head) {
+	// Forward Dir
+	while (head) {
+		cout << head->data << " ";
+		head = head->next;
+	}
+	// Backward dir
+	// while(head->prev){
+	// 	cout<<head->data<<" ";
+	// 	head = head->prev;
+	// }
+	// cout<<head->data<<" ";
+	// /
+	cout << endl;
+}
+
+void insertAtBeg(Node*&head, int d) {
+
+	// create a node
+	Node* n = new Node(d);
+
+	if (head == nullptr) {
+		head = n;
+		return;
+	}
+
+	//General Case
+	n->next =  head;
+	head->prev = n;
+	head = n;
+}
+
+void insertAtEnd(Node*&head, int d) {
+	Node*n = new Node(d);
+
+	if (head == nullptr) {
+		head = n;
+		return;
+	}
+
+	Node*tail = head;
+	while (tail->next) {
+		tail = tail->next;
+	}
+
+	tail->next = n;
+	n->prev = tail;
+}
+
+void insertBeforeNode(Node*&head, int key, int d) {
+	// key-> before which we have to insert the node
+	// d -> data which we have to insert 
+	if(head == nullptr)
+		return;
+
+	if(key ==  head->data){
+		insertAtBeg(head,d);
+		return;\
+	}
+
+	// Step-1 Create the Node 
+	Node*n = new Node(d);
+
+	// Step-2 Reach to the given key
+	Node* curr = head;
+	while(curr && curr->data!=key){
+		curr = curr ->next;
+	}
+
+	if(curr == nullptr){
+		// if we don't find the key
+		return;
+	}
+
+	// Step-3 Link the nodes
+	curr->prev->next = n;
+	n->prev = curr->prev;
+
+	n->next = curr;
+	curr->prev = n;
+}
+
+void DeleteAtBEg(Node*&head){
+	if(head == nullptr){
+		return;
+	}
+
+	Node * del = head;
+	head = head->next;
+	delete del;
+	if(head)
+		head->prev = nullptr;
+}
+
+void DeleteAtEnd(Node*& head){
+
+	if(head == nullptr)
+		return;
+
+	Node*curr = head;
+	while(curr->next){
+		curr = curr->next;
+	}
+
+	if(curr->prev)
+		curr->prev->next = nullptr;
+
+	delete curr;
+}
+
+
+void DeleteAnyNode(Node*&head,int key){
+
+	if(head == nullptr)
+		return;
+
+	if(head->data == key){
+		DeleteAtBEg(head);
+		return;
+	}
+	// search for the given key
+	Node*curr = head;
+	while(curr && curr->data!=key){
+		curr = curr->next;
+	}
+	if(curr == nullptr){
+		// key not found
+		return;
+	}
+
+	curr->prev->next = curr->next;
+	if(curr->next)
+		curr->next->prev = curr->prev;
+	delete curr;
+}
+
+
+
+int main() {
+	freopen("input.txt", "r", stdin);
+
+	Node *head = CreateDLL();
+	// Print(head);
+
+	insertAtBeg(head, 0);
+	insertAtEnd(head, 6);
+
+	insertBeforeNode(head,10,14);
+	Print(head);
+
+	DeleteAtBEg(head);
+	DeleteAtEnd(head);
+	Print(head);
+
+	DeleteAnyNode(head,1);
+	Print(head);
+
+	return 0;
+}
