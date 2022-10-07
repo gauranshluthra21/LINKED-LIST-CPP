@@ -1,0 +1,163 @@
+// circularLinkedList.cpp
+/*
+Circular Linked List
+We are given a linked list which contains a cycle. Detect that cycle and break it. Print the linked list after removing the cycle.
+Input Format
+The first line contains space separated integers. The integers are such that all the values are distinct but the value start repeating once the cycle gets completed. The list of integers given ends when -1 is input.
+Constraints
+n < 10^5 where n is the length of list without the cycle
+Output Format
+Output single line containing space separated integers representing the list
+Sample Input
+1 2 3 4 5 2 3 -1
+Sample Output
+1 2 3 4 5
+https://ide.codingblocks.com/s/267924
+*/
+
+
+// ## function on hacker bocks// Function Link: 
+// https://ide.codingblocks.com/s/258311
+ // head - Head pointer of the Linked List
+// Return a boolean value indicating the presence of cycle
+// If the cycle is present, modify the linked list to remove the cycle as well
+bool floydCycleRemoval(Node *head)
+{
+    /* Code here */
+    if(head==NULL)return false;
+    Node*slow=head,*fast=head->next;
+
+	while(fast&&fast->next){
+		if(slow==fast)break;
+		slow=slow->next;
+		fast=fast->next->next;
+	}
+	// if cycle not present
+	if(fast==NULL||fast->next==NULL)return false;
+     if (fast->next == head)
+    {
+        fast->next = NULL;
+        return true;
+    }
+		fast=fast->next;
+    slow=head;
+	/// move slow and fast one by one
+	while(slow->next!=fast->next){
+		slow=slow->next;
+		fast=fast->next;
+	}
+	fast->next=NULL;
+    return true;
+}
+
+#include<bits/stdc++.h>
+using  namespace std;
+class node{
+public:
+	int data;
+	node*next;
+	node(int d){
+		data=d;
+		next=NULL;
+	}
+};
+node* insertatbeg(int d,node*head){
+	if(head==NULL)return new node(d);
+
+	node*nn=new node(d);
+	nn->next=head;
+	head=nn;
+	return head;
+}
+void Print(node*head){
+	if(head==NULL){ cout<<endl; return ;}
+	cout<<head->data<<" ";
+	Print(head->next);
+}
+
+void makecycle(int cycle,node*head){
+	node*temp=NULL;
+	while(head->next){
+		if(head->data==cycle)temp=head;
+		head=head->next;
+	}
+
+	head->next=temp;
+}
+bool detectCycle(node*head){
+	node*slow=head,*fast=head->next;
+
+	while(fast&&fast->next){
+		if(slow==fast)return true;
+		slow=slow->next;
+		fast=fast->next->next;
+	}
+	return false;
+}
+
+void  BreakCycle(node*head){
+	node*slow=head,*fast=head->next,*temp=NULL;
+
+	while(fast&&fast->next){
+		if(slow==fast)break;
+		slow=slow->next;
+		fast=fast->next->next;
+	}
+	// if cycle not present
+	if(fast==NULL||fast->next==NULL)return;
+
+	/// now count no of nodes in loop
+	int k=1;
+	slow=slow->next;
+	while(slow!=fast){
+		k++;
+		slow=slow->next;
+	}
+
+	// now point slow to head and fast to k node ahead
+	slow=head;
+	fast=head;
+	while(k--){
+		fast=fast->next;
+	}
+	/// move slow and fast one by one
+	while(slow!=fast){
+		slow=slow->next;
+		fast=fast->next;
+	}
+	// now move only fast
+	while(fast->next!=slow){
+		fast=fast->next;	
+	}
+	fast->next=NULL;
+}
+
+int main(){
+	// freopen("input.txt","r",stdin);
+	node*head=NULL;
+	int arr[10000]={};
+	int cnt=0;
+	int x;cin>>x;
+	set<int>s;
+	int cycle=-1;
+	while(x!=-1){
+		arr[cnt]=x;
+		cnt++;
+		s.insert(x);
+		if(s.size()!=cnt){
+			cnt--;
+			 cycle=x;
+			 break;
+		}
+		cin>>x;
+	}
+	for(int i=cnt-1;i>=0;i--){
+		head=insertatbeg(arr[i],head);
+	}
+	// Print(head);
+	makecycle(cycle,head);
+    // cout<<detectCycle(head)<<endl;
+    BreakCycle(head);
+    Print(head);
+	return 0;
+}
