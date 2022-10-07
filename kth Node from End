@@ -1,0 +1,85 @@
+#include<iostream>
+using namespace std;
+
+class Node
+{
+public:
+	int data;
+	Node* next;
+
+	Node(int d){
+		data = d;
+		next = nullptr;
+	}
+};
+
+Node* createLinkedList(){
+	Node*head = nullptr;
+	Node*tail = nullptr;
+
+	int n,d;
+	cin>>n;
+
+	for(int i=0;i<n;i++){
+		cin>>d;
+		Node*n = new Node(d);
+
+		if(head == nullptr){
+			head = n;
+			tail = n;
+		}else{
+			tail->next = n;
+			tail = n;
+		}
+	}
+	return head;
+}
+
+void KthNodeFromLast(Node*head,int k){
+	
+	if(head == nullptr)
+		return;
+
+	Node* ptr1,ptr2;
+	ptr1 = head;
+	ptr2 = head;
+
+	// move ptr2 k steps ahead
+
+	while(k-- && ptr2){
+		ptr2 = ptr2 ->next;
+	}
+
+	// move ptr1 and ptr2 one step each
+
+	while(ptr2){
+		ptr2= ptr2->next;
+		ptr1= ptr1->next;
+	}
+
+	cout<<ptr1->data<<" ";
+}
+
+void Print(Node* head){
+
+	while(head){
+		cout<<head->data<<" ";
+		head = head->next;
+	}
+	cout<<endl;
+}
+
+int main(){
+
+	freopen("input.txt","r",stdin);
+
+	Node* head = createLinkedList();
+
+	Print(head);
+
+
+	KthNodeFromLast(head);
+
+
+	return 0;
+}
